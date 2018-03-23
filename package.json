@@ -1,0 +1,32 @@
+{
+  "name": "skippersmeeting",
+  "version": "1.0.0",
+  "description": "Sailboat Racing Simulator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChrisDooly/OLYC.git"
+  },
+  "author": "Charlie Murphy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ChrisDooly/OLYC/issues"
+  },
+  "homepage": "https://github.com/ChrisDooly/OLYC#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "fs": "0.0.1-security",
+    "mongodb": "^3.0.4",
+    "nodemon": "^1.17.1",
+    "npm": "^5.7.1",
+    "update-mongo": "0.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.2"
+  }
+}
