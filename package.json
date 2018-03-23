@@ -24,7 +24,8 @@
     "mongodb": "^3.0.4",
     "nodemon": "^1.17.1",
     "npm": "^5.7.1",
-    "update-mongo": "0.0.4"
+    "update-mongo": "0.0.4",
+    "ws": "^5.1.0"
   },
   "devDependencies": {
     "nodemon": "^1.17.2"

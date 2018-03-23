@@ -10,6 +10,7 @@
 </head>
 <body>
     <!-- <form action="/inspection_search_url" method="GET"></form> -->
+    <div>
         <t>
             <tr>
             <td>
@@ -19,10 +20,16 @@
             <input type="text" id="epochs" name="search">
             </td>
             <td>
-                <button id="train" name="train" onclick="train2()">Train</button>
+                <button id="train" name="train" onclick="train2()" disabled="true">Train</button>
             </td>
             </tr>
         </t>
+    </div>
+    <br>
+    <br>
+    <div>
+        <button id="save" name="save" onclick="storeBoatspeedNetwork()" disabled="true">Store Network</button>
+    </div>
     <!-- </form> -->
 </body>
 </HTML>

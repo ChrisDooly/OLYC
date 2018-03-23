@@ -2,11 +2,33 @@ var MongoClient = require('mongodb').MongoClient;
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
-//var webSocketServer = require("ws");
+var webSocketServer = require("ws").Server;
 var url = "mongodb://localhost:27017";
+var port = process.env.PORT || 9030;
+var ws = new webSocketServer({port: port});
+var fs = require("fs");
 
  app.use(bodyParser.json());
  app.use(bodyParser.urlencoded({ extended:false}));
+
+// web socket
+ws.on('connection', function(w){
+    w.on('message', function(msg){
+       // sockets[message.to].send(message.message);
+        msg=JSON.parse(msg);
+        console.log('message from client: ' + msg);
+
+        var txtFile = "./AI/networks/boatspeed.txt";
+        fs.writeFile(txtFile, msg, function(err){
+            if (err) throw err;
+            console.log("Saved boatspeed")
+        });
+    });
+    
+    w.on('close', function() {
+        console.log('closing connection');
+    });
+});
 
 // routing
 app.get("/boatspeed", function(req, res){

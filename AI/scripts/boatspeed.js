@@ -2,8 +2,27 @@ var inputs = [];
 var outputs = [];
 const _INPUTS = 2;
 const _OUTPUTS = 1;
-var thresh_min = 0.0;
-var thresh_max = 1.0;
+var thresh_min = 0.05;
+var thresh_max = 0.95;
+
+// setup web socket
+
+var connection = new WebSocket('ws://localhost:9030');
+
+connection.onopen = function () {
+  
+};
+
+// Log errors
+connection.onerror = function (error) {
+  console.error('WebSocket Error ' + error);
+};
+
+// Log messages from the server
+connection.onmessage = function (e) {
+
+};
+
 
 $.getJSON('/boatspeed', function(data)
 {
@@ -69,47 +88,33 @@ $.getJSON('/boatspeed', function(data)
     }
 
     console.log("boatspeed data loaded");
-    
-
+    var e = document.getElementById("train");
+    e.disabled = false;
 });
 
-function train()
-{
-    var e = document.getElementById("epochs");
-    console.log("Training for " + e.value + " epochs");
-    var epochs = e.value;
-
-    const { Layer, Network } = window.synaptic;
-    var inputLayer = new Layer(2);
-    var hiddenLayer = new Layer(5);
-    var outputLayer = new Layer(1);
-
-    var myNetwork = new Network({
-        input: inputLayer, 
-        hidden: [hiddenLayer],
-        output: outputLayer
-    })
-    // train the network - learn boatspeed
-    var learningRate = .3;
-    
-    for (var iteration = 0; iteration < epochs; iteration++)
-    {
-        for (var i = 0; i < inputs.length; i++) {
-            // 0,0 => 0
-            console.log("Learn: " + inputs[i][0] + ", " + inputs[i][1] + " = " + outputs[i][0]);
-            var outx = myNetwork.activate([inputs[i][0], inputs[i][1]]);
-            myNetwork.propagate(learningRate, [outputs[i][0]]);
-            
-            if (!outx)
-                console.log("NO X")
-            else
-                console.log("**" + outx + "((")
-
-            console.log(i + ": " + outputs[i][0] + " = " + outx);
-            console.log(outputLayer.list[0])
-        }
-    }
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
 }
+
+function randomOrderArray(rows)
+{
+    var out = [];
+    for (var i = 0; i < rows; i++)
+    {
+        out[i] = i;
+    }
+    for (var i = 0; i < rows; i++)
+    {
+        var idx = getRandomInt(rows);
+        var tmp = out[i];
+        out[i] = out[idx];
+        out[idx] = tmp;
+    }
+    
+    return out;
+}
+
+this.network = new synaptic.Architect.Perceptron(2, 18, 1);
 
 function train2()
 {
@@ -117,41 +122,45 @@ function train2()
     console.log("Training for " + e.value + " epochs");
     var epochs = e.value;
 
-    this.network = new synaptic.Architect.Perceptron(2, 15, 1);
-
     // train the network - learn boatspeed
     var learningRate = .3;
-    
+    console.log(inputs.length)
+    var randomOrder = randomOrderArray(inputs.length);
+
     for (var iteration = 0; iteration < epochs; iteration++)
     {
         for (var i = 0; i < inputs.length; i++) {
-            // 0,0 => 0
-//            console.log("Learn: " + inputs[i][0] + ", " + inputs[i][1] + " = " + outputs[i][0]);
-            var outx = this.network.activate([inputs[i][0], inputs[i][1]]);
-            this.network.propagate(learningRate, [outputs[i][0]]);
+            var outx = this.network.activate([inputs[randomOrder[i]][0], inputs[randomOrder[i]][1]]);
+            this.network.propagate(learningRate, [outputs[randomOrder[i]][0]]);
+            // this.network.activate([inputs[i][0], inputs[i][1]]);
+            // this.network.propagate(learningRate, [outputs[i][0]]);
             
             if (iteration == epochs - 1)
-            console.log(i + ": " + outputs[i][0] + " = " + outx);
+                console.log(i + ": " + outputs[randomOrder[i]][0] + " = " + outx);
         }
     }
+
+    var e = document.getElementById("save");
+    e.disabled = false;
 }
 
 
-// $(document).ready()
-// {
-// 	$("Doit").click(function(){
-// 		console.log("******************************* BUTTON CLICKED ******************************");
-// 		console.log("******************************* BUTTON CLICKED ******************************");
-// 		console.log("******************************* BUTTON CLICKED ******************************");
-// 		console.log("******************************* BUTTON CLICKED ******************************");
-// 		console.log("******************************* BUTTON CLICKED ******************************");
-// 		console.log("******************************* BUTTON CLICKED ******************************");
-// 		console.log("******************************* BUTTON CLICKED ******************************");
-// 		console.log("******************************* BUTTON CLICKED ******************************");
+function storeBoatspeedNetwork()
+{
+    console.log("Store network")
+    //console.log(this.network);
 
-//         var e = Document.getElementById("epochs");
-//         console.log("Training for " + e.value + " epochs");
-//         var epochs = e.value;
-//         train(epochs);
-//     })
-// }
+    let exported = JSON.stringify(this.network.toJSON());
+//    let imported = synaptic.Network.fromJSON(JSON.parse(exported));
+    console.log("Exported: " + exported)
+
+    connection.onmessage = function (e) {
+        console.log(e.data);
+        console.log('message from server', e.data);
+    };
+    var data = {
+        to: "sec-websocket-identifier",
+        message: exported
+    };
+    connection.send(data);
+}
