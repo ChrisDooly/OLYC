@@ -15,26 +15,24 @@ else
 {
     console.log("Weather: " + weather.windSpeed + ", " + weather.windDirection)
 }
+
 setTimeout(2000)
 
 var fleet = new Fleet();
-console.log("Fleet: " + fleet);
-console.log("Weather.ws: " + weather.windSpeed + "  Weather.wd: " + weather.windDirection);
-//fleet.update(weather);
 
 var ticksSinceBigBang = 0;
 
 function gameLoop() {
     if (Weather.windSpeed > 0)
     {
-        fleet.update();
+        Fleet.update();
     }
 
     if (ticksSinceBigBang++ % 1000 == 0)
         Weather.update();
 
     cx.clearRect(0,0,cw,cw);
-    fleet.paint();
+    Fleet.paint();
     
     cx.beginPath();
     cx.fillStyle = 'red';
@@ -52,3 +50,20 @@ if (typeof (canvas.getContext) !== undefined) {
 
     setInterval(gameLoop, 1000 / fps);
 }
+
+document.onkeydown = function(event) {
+    switch (event.keyCode) {
+       case 37:
+          console.log('Left key pressed');
+          break;
+       case 38:
+          console.log('Up key pressed');
+          break;
+       case 39:
+          console.log('Right key pressed');
+          break;
+       case 40:
+          console.log('Down key pressed');
+          break;
+    }
+};

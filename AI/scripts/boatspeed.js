@@ -23,6 +23,8 @@ connection.onmessage = function (e) {
 
 };
 
+var b = [];
+var m = [];
 
 $.getJSON('/boatspeed', function(data)
 {
@@ -60,8 +62,8 @@ $.getJSON('/boatspeed', function(data)
         }
     }
 
-    var b = [];
-    var m = [];
+    // var b = [];
+    // var m = [];
 
 
     for(var j=0; j < _INPUTS + _OUTPUTS; j++)
@@ -114,7 +116,7 @@ function randomOrderArray(rows)
     return out;
 }
 
-this.network = new synaptic.Architect.Perceptron(2, 18, 1);
+this.network = new synaptic.Architect.Perceptron(2, 25, 1);
 
 function train2()
 {
@@ -148,11 +150,33 @@ function train2()
 function storeBoatspeedNetwork()
 {
     console.log("Store network")
-    //console.log(this.network);
-
+    
     let exported = JSON.stringify(this.network.toJSON());
-//    let imported = synaptic.Network.fromJSON(JSON.parse(exported));
+    
     console.log("Exported: " + exported)
+
+    connection.onmessage = function (e) {
+        console.log(e.data);
+        console.log('message from server', e.data);
+    };
+
+    var data = {
+        to: "sec-websocket-identifier",
+        message: exported
+    }
+
+    console.log("Send Network");
+    //connection.send(data);
+    connection.send("1" + exported);
+}
+
+
+function storeMinMax()
+{
+    console.log("Store minMax")
+    //var bson = new BSON();
+
+    //let exported = JSON.stringify(this.network.toJSON());
 
     connection.onmessage = function (e) {
         console.log(e.data);
@@ -162,5 +186,11 @@ function storeBoatspeedNetwork()
         to: "sec-websocket-identifier",
         message: exported
     };
-    connection.send(data);
+
+    console.log("Send Network");
+    var exported = "" + m.length + "\n";
+    exported+= m.join(",") + "\n";
+    exported+= b.join(",");
+    connection.send("2" + exported);
+    
 }

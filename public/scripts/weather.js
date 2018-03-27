@@ -43,4 +43,23 @@ class Weather{
             if (!Weather.windSpeed) throw "NO SPEED"
         });
     }
+
+    static paint()
+    {
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        // draw circle
+        ctx.beginPath();
+        ctx.arc(100,75,50,0,2 * Math.PI);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(100, 75);
+        ctx.lineTo(100 - 45.0 * Math.cos(Weather.windDirection), 75 - 45.0 * Math.sin(Weather.windDirection));
+        ctx.stroke();
+
+        ctx.font = "15px Arial";
+        ctx.fillText("Wind Speed " + this.windSpeed.toFixed(1), 45, 150);
+        ctx.fillText("Wind Direction " + radiansToDegrees(this.windDirection).toFixed(0), 45, 170);
+    }
 }
