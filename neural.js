@@ -8,21 +8,46 @@ var port = process.env.PORT || 9030;
 var ws = new webSocketServer({port: port});
 var fs = require("fs");
 
+var txtNetworkFile = "./AI/networks/boatspeed.txt";
+var txtMinMaxFile = "./AI/networks/minmax.txt";
+
  app.use(bodyParser.json());
  app.use(bodyParser.urlencoded({ extended:false}));
 
 // web socket
 ws.on('connection', function(w){
     w.on('message', function(msg){
-       // sockets[message.to].send(message.message);
-        msg=JSON.parse(msg);
+        // payload 
+        let userData = null;
+        var messageType = msg.substring(0, 1);
+        console.log("Message Type: " + messageType);
+        msg = msg.substring(1);
+
+        // var message = userData;
         console.log('message from client: ' + msg);
 
-        var txtFile = "./AI/networks/boatspeed.txt";
-        fs.writeFile(txtFile, msg, function(err){
-            if (err) throw err;
-            console.log("Saved boatspeed")
-        });
+        if (messageType == 1)
+        {
+            // try {
+            //     msg = JSON.parse(msg); 
+            // } catch (e) {
+            //     // You can read e for more info
+            //     // Let's assume the error is that we already have parsed the payload
+            //     // So just return that
+            //     msg = msg;
+            // }
+
+            fs.writeFile(txtNetworkFile, msg, function(err){
+                if (err) throw err;
+                console.log("Saved boatspeed")
+            });
+        } else if (messageType == "2")
+        {
+            fs.writeFile(txtMinMaxFile, msg, function(err){
+                if (err) throw err;
+                console.log("Saved minMax")
+            });
+        }
     });
     
     w.on('close', function() {
@@ -32,7 +57,7 @@ ws.on('connection', function(w){
 
 // routing
 app.get("/boatspeed", function(req, res){
-    console.log("Get boatspeed datwa");
+    console.log("Get boatspeed data");
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         console.log("Connected to server");
@@ -60,6 +85,7 @@ app.get("/boatspeed", function(req, res){
         });
     });
 });
+
 
 app.use(function(req, res, next) {
     console.log(`${req.method} request for ${req.url}`);

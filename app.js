@@ -4,26 +4,11 @@ var app = express();
 var bodyParser = require("body-parser");
 //var webSocketServer = require("ws");
 var url = "mongodb://localhost:27017";
+var fs = require("fs");
 
  app.use(bodyParser.json());
  app.use(bodyParser.urlencoded({ extended:false}));
 
-// routing
-// app.get("/dictionary-api2", function(req, res){
-//   res.json(albumsOnServer2);
-// });
-
-// app.post("/albumsOnServer2", function(req, res){
-//   console.log("Artist: " + req.body);
-//    res.json(albumsOnServer2);
-// });
-
-// app.get('./public/Music/artist/:artist/album/:album/song/:song', function (req, res) {
-//   console.log("HERE:" + req.params);
-//   res.send(req.params)
-// });
-
-// end routing
 
 // routing
 app.get("/wind", function(req, res){
@@ -62,6 +47,40 @@ app.get("/wind", function(req, res){
         });
     });
 });
+
+app.get("/boatspeedNetwork", function(req, res){
+    var txtFile = "./AI/networks/boatspeed.txt";
+
+    console.log("Get boatspeed network");
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        console.log("Connected to server");
+
+        fs.readFile(txtFile, function(err, data){
+            if (err) throw err;
+            console.log("Boatspeed Network: " + data);
+            res.json(JSON.parse(data));
+        });
+    });
+});
+
+app.get("/boatspeedMinMax", function(req, res){
+    var txtMinMaxFile = "./AI/networks/minmax.txt";
+
+    console.log("Get boatspeed network min/max");
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        console.log("Connected to server");
+
+        fs.readFile(txtMinMaxFile, function(err, data){
+            if (err) throw err;
+            console.log("Boatspeed Network Min/Max: " + data);
+            res.write(data);
+            res.end();
+        });
+    });
+});
+
 
 app.use(function(req, res, next) {
     console.log(`${req.method} request for ${req.url}`);
