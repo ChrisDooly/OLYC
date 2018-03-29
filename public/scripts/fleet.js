@@ -16,6 +16,7 @@ var b = [];
 $(function(){
     //\networks\minmax.txt
     $.get("/boatspeedMinMax", function( data ) {
+       //s console.log("Parsing data: " + data);
         var parts = data.split("\n");
         console.log("Parts[0]: " + parts[0]);
         m = parts[1].split(',');
@@ -30,11 +31,17 @@ $(function(){
     });
 });
 
+
 class Sailboat{
     constructor(number){
-        this.number = number;
+        console.log("Construct Sailboat #" + number);
+
+        this.boatNumber = number;
         this.direction = thresholdWithin2PI(Math.random() * 2.0 * Math.PI);
         this.location = new Point(Math.random() * 500.0, Math.random() * 500.0);
+        console.log("Location: " + this.location.x + "," + this.location.y);
+        //this.location = new Point(0, 0);
+
         console.log("Constructor: " + this.location.x + "," + this.location.y);
 
         this.velocity = 0;
@@ -47,19 +54,48 @@ class Sailboat{
         this.leftControlPoint2 = new Point(0, 0);
         this.rightControlPoint1 = new Point(0, 0);
         this.rightControlPoint2 = new Point(0, 0);
-
+        this.startClass = null;
         this.lastMoves = new Queue();
         this.steeringIncrement = 0.005;
-
         this.ticksSinceSteering = 0;
-
         this.crewStrength = 100;
+        this.autoPilot = true;
+
+        Sailboat.HeightOfLoiteringBox = 4000.0;
+        Sailboat.LengthOfLoiteringBox = 2000.0;
+
+        switch (this.boatNumber % 7)
+        {
+            case 0:
+                this.startClass = StartingClass.class1;
+                break;
+            case 1:
+                this.startClass = StartingClass.class2;
+                break;
+            case 2:
+                this.startClass = StartingClass.class3;
+                break;
+            case 3:
+                this.startClass = StartingClass.class4;
+                break;
+            case 4:
+                this.startClass = StartingClass.class5;
+                break;
+            case 5:
+                this.startClass = StartingClass.class6;
+                break;
+            case 6:
+                this.startClass = StartingClass.class7;
+                break;
+            default:
+                throw new Exception("NEED MORE CLASSES");
+        }
     }
 
     update(elapsed, windSpeed, windDir)
     {
         Log("WINDSPEED" + windSpeed + "   WINDDIR: " + windDir);
-        Log("Sailboat.update(" + this.number + ")");
+        Log("Sailboat.update(" + this.boatNumber + ")");
         Log("Elapsed: " + elapsed + ", " + (1.0 / elapsed));
         Log("windSpeed: " + windSpeed);
         Log("windDir: " + windDir);
@@ -179,7 +215,7 @@ class Sailboat{
         var tranR = Camera.convertLocationToScreen(this.transomRight);
         var bow = Camera.convertLocationToScreen(this.bow);
 
-        if (this.number == 0)
+        if (this.boatNumber == 0)
         {
             //console.log("Fleet 0");
             //console.log("(" + this.location.x +"," + this.location.y + ")");
@@ -219,7 +255,7 @@ class Sailboat{
             ctx.stroke();
         }
 
-        if (this.number == 0)
+        if (this.boatNumber == 0)
              ctx.strokeStyle = 'blue';
         else
             ctx.strokeStyle = 'black';
@@ -241,7 +277,7 @@ class Sailboat{
     }
 }
 
-const fleetSize = 40;
+const fleetSize = 440;
 var camera = new Camera();
 
 class Fleet{
@@ -273,6 +309,7 @@ class Fleet{
     }
 
     static paint(){
+        console.log("Fleet Paint()")
         Weather.paint();
         for(var i = 0; i < fleetSize; i++)
         {

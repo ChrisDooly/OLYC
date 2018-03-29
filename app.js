@@ -20,7 +20,7 @@ app.get("/wind", function(req, res){
         var d = new Date();
         console.log(d);
 
-        var month = d.getMonth();
+        var month = d.getMonth() + 1;
         var day = d.getDate();
         var hour = d.getHours();
 
@@ -75,6 +75,7 @@ app.get("/boatspeedMinMax", function(req, res){
         fs.readFile(txtMinMaxFile, function(err, data){
             if (err) throw err;
             console.log("Boatspeed Network Min/Max: " + data);
+           // res.header("Content-Type", "application/json; charset=utf-8");
             res.write(data);
             res.end();
         });

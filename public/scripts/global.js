@@ -44,7 +44,23 @@ class Point {
     }
   }
   
-  // Queue
+function directionBetweenPoints(point1, point2)
+{
+    return Math.atan2(point1.y - point2.y, point1.x - point2.x);
+}
+
+function DistanceBetweenPoints(point1, point2)
+{
+    return Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2));
+}
+
+// random
+function nextRandomInt(seed)
+{
+    return Math.floor(Math.random() * (seed + 1));
+}
+
+// Queue
   
 // This Stack is written using the pseudoclassical pattern
 

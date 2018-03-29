@@ -1,6 +1,12 @@
+CameraCenter = {Boat1 : 0,
+    RaceCommittee : 1, 
+    StartingMark : 2}
+
+
 class Camera{
     constructor(left, top, width, height)
     {
+        Camera.cameraCenter = CameraCenter.Boat1;
         Camera.location = new Point(0, 0);
         Camera.Z = 10;
         Camera.width = width;
@@ -37,24 +43,4 @@ class Camera{
 
         return pt;
     }
-
-    // static ConvertScreen2World(location)
-    //     {
-    //         //console.log("ConvertScreen2World: " + location.x + ", " + location.y);
-    //         //console.log("ConvertScreen2World camera height: " + Camera.height);
-    //         //console.log("ConvertScreen2World camera location: " + Camera.location.x + ", " + Camera.location.y);
-    //         //console.log("ConvertScreen2World: " + Camera.left + ", " + Camera.top + ", " + Camera.width + ", " + Camera.height);
-    //        // console.log("Camera is at (" + Camera.location.x + "," + Camera.location.y + ")");
-    //         // var xx = (Camera.width - Camera.left) - location.x;
-    //         // var yy = (Camera.height - Camera.top) - location.y;
-    //         // var scale3 = 0.5 / (1.0 / Camera.height);
-
-    //         var returnPoint = new Point((1.0 / Camera.height) * (location.x - Camera.location.x), (1.0 / Camera.height) * (location.y - Camera.location.y));
-    //         returnPoint.X += Camera.center.x;
-    //         returnPoint.Y += Camera.center.y;
-            
-    //         console.log("ConvertScreen2World returns: " + returnPoint.x + ", " + returnPoint.y);
-
-    //         //return (returnPoint);
-    //     }
 }

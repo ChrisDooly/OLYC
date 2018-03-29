@@ -62,4 +62,9 @@ class Weather{
         ctx.fillText("Wind Speed " + this.windSpeed.toFixed(1), 45, 150);
         ctx.fillText("Wind Direction " + radiansToDegrees(this.windDirection).toFixed(0), 45, 170);
     }
+
+    static WindDirection(location)
+    {
+        return Weather.WindDirection;
+    }
 }

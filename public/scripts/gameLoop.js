@@ -23,22 +23,26 @@ else
 
 setTimeout(2000)
 
-var fleet = new Fleet();
+//var fleet = new Fleet();
 var ticksSinceBigBang = 0;
 let zoomFactor = 0;
 let steer = 0;
+var raceCommittee = new RaceCommittee();
+var yachtClub = new YachtClub();
+
 
 Camera.updateCenter(canvas.width, canvas.height);
 
 function gameLoop() {
     if (Weather.windSpeed > 0)
     {
-        Fleet.update();
-        Camera.update(Fleet.fleet[0].location);
-
+        console.log("Loop")
+        // Fleet.update();
+        // Camera.update(Fleet.fleet[0].location);
+        // RaceCommittee.update();
+        YachtClub.Update();
         // check weather every 30 seconds
-        if (ticksSinceBigBang++ % 30000 == 0)
-            Weather.update();
+        
 
         cx.clearRect(0,0,cw,cw);
         
@@ -83,7 +87,7 @@ function gameLoop() {
 
 if (typeof (canvas.getContext) !== undefined) {
     cx = canvas.getContext('2d');
-    Camera.update(Fleet.fleet[0].location);
+    Camera.update(YachtClub.Fleet[0].location);
     setInterval(gameLoop, 1000 / fps);
 
     //setInterval(gameLoop, 1000 );
