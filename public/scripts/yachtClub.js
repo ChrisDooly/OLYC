@@ -240,36 +240,31 @@ class YachtClub
 
     static UpdateMooringField()
     {
-        Parallel.For(0, MooringField.Length, i =>
-            {
-                MooringField[i].Update();
-            });
+        for(var i; i < YachtClub.MooringField.length; i++)
+            YachtClub.MooringField[i].Update();
     }
 
-    static UpdateFleet()
+    static UpdateFleet(elapsed)
     {
         var collisions = 0;
 
-        Parallel.For(0, Fleet.Length, i =>
-            {
-                //for (var i = 0; i < Fleet.Length; i++)
-                Fleet[i].skipper.BeingCollidedWith = false;
-            });
-        Parallel.For(0, Fleet.Length, i =>
-            {
-                //for (var i = 0; i < Fleet.Length; i++)
-                Fleet[i].UpdateCounters();
-            });
+        
+        for (var i = 0; i < YachtClub.Fleet.length; i++)
+            YachtClub.Fleet[i].update(elapsed);
+        /*    
+        for (var i = 0; i < YachtClub.Fleet.length; i++)
+            YachtClub.Fleet[i].skipper.BeingCollidedWith = false;
+        
+
+        for (var i = 0; i < YachtClub.Fleet.length; i++)
+            YachtClub.Fleet[i].UpdateCounters();
     
-        for (var i = 0; i < Fleet.Length; i++)
-            Fleet[i].UpdateBoatHandlingQueue();
+        for (var i = 0; i < YachtClub.Fleet.length; i++)
+            YachtClub.Fleet[i].UpdateBoatHandlingQueue();
 
-        Parallel.For(0, Fleet.Length, i =>
-        {
-            //for (var i = 0; i < Fleet.Length; i++)
-            Fleet[i].ProcessBoatHandlingEvent();
-        });
-
+        for (var i = 0; i < YachtClub.Fleet.length; i++)
+            YachtClub.Fleet[i].ProcessBoatHandlingEvent();
+*/
         RaceCommittee.BoatIsNearWindwardMark = false;
         RaceCommittee.BoatIsNearJibeMark1 = false;
         RaceCommittee.BoatIsNearJibeMark2 = false;
@@ -277,7 +272,7 @@ class YachtClub
         RaceCommittee.BoatIsNearFinishMark = false;
         RaceCommittee.BoatIsNearFinishBoat = false;
 
-        for (var i=0; i<Fleet.Length; i++)
+        for (var i=0; i< YachtClub.Fleet.Length; i++)
         {
             Fleet[i].UpdateAfterBoatHandlingDecision();
             if (Fleet[i].CURRENTLY_COLLIDING)
@@ -286,7 +281,7 @@ class YachtClub
         return collisions;
     }
     
-    static Update()
+    static Update(elapsed)
     {
         var collisions = 0;
 
@@ -305,12 +300,15 @@ class YachtClub
         
         if (ticksSinceBigBang++ % 30000 == 0)
             Weather.update();
-        //Weather.update();
-        RaceCommittee.update();
 
-        Radar.Update();  // updates the distance and vmg matrices for the fleet
-        collisions = UpdateFleet();
-        UpdateMooringField();
+        RaceCommittee.update();
+        
+
+        Radar.Update();  // updates the distance and vmg matrices for the YachtClub.Fleet
+
+        collisions = YachtClub.UpdateFleet(elapsed);
+
+        YachtClub.UpdateMooringField();
 
         // if this boat is within the final minute of its starting sequence
         // then we'll adjust the starting area extents to get the boats to start hopefully
@@ -323,10 +321,11 @@ class YachtClub
             }
         }
 
-        TicksSinceBigBang++;
+        YachtClub.TicksSinceBigBang++;
 
-        SurfaceWater.Update();
+        //SurfaceWater.Update();
 
         return collisions;
     }
 }
+

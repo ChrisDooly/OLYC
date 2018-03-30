@@ -29,25 +29,33 @@ let zoomFactor = 0;
 let steer = 0;
 var raceCommittee = new RaceCommittee();
 var yachtClub = new YachtClub();
-
+var dumbBoat = new DumbBoat();
+var radar = new Radar();
 
 Camera.updateCenter(canvas.width, canvas.height);
 
+
 function gameLoop() {
+  
     if (Weather.windSpeed > 0)
     {
-        console.log("Loop")
-        // Fleet.update();
-        // Camera.update(Fleet.fleet[0].location);
-        // RaceCommittee.update();
-        YachtClub.Update();
-        // check weather every 30 seconds
+        this.time = Date.now();
+        this.elapsed = this.time - this.lastTime;
+        this.lastTime = this.time;
+
+        console.log("LAST: " + lastTime)
+        console.log("ELAPSED: " + elapsed)
         
+        YachtClub.Update(elapsed);
 
         cx.clearRect(0,0,cw,cw);
         
-        Fleet.paint();
-        
+        Weather.paint();
+        for(var i = 0; i <  YachtClub.Fleet.length; i++)
+        {
+            YachtClub.Fleet[i].paint();
+        }
+
         cx.beginPath();
         cx.fillStyle = 'red';
         cx.arc(bX, bY, 20, 0, Math.PI * 360);
@@ -71,16 +79,16 @@ function gameLoop() {
         {
             if (steer == -1)
             {
-                Fleet.fleet[0].portSteerEvent();
+                YachtClub.Fleet[0].portSteerEvent();
                 steer = 0;
             }
             else{
-                Fleet.fleet[0].starboardSteerEvent();
+                YachtClub.Fleet[0].starboardSteerEvent();
                 steer = 0;
             }
         }
         else{
-            Fleet.fleet[0].noSteerEvent();
+            YachtClub.Fleet[0].noSteerEvent();
         }
     }
 }

@@ -1,10 +1,10 @@
 const debugPainting = false;
 
-var boatSpeedNetwork;
+this.boatSpeedNetwork = null;
 
 $.getJSON('/boatspeedNetwork', function(data)
 {
-    boatSpeedNetwork = synaptic.Network.fromJSON(data);
+    this.boatSpeedNetwork = synaptic.Network.fromJSON(data);
 
     console.log("Boatspeed Network: " + data);
 });
@@ -34,15 +34,9 @@ $(function(){
 
 class Sailboat{
     constructor(number){
-        console.log("Construct Sailboat #" + number);
-
         this.boatNumber = number;
         this.direction = thresholdWithin2PI(Math.random() * 2.0 * Math.PI);
         this.location = new Point(Math.random() * 500.0, Math.random() * 500.0);
-        console.log("Location: " + this.location.x + "," + this.location.y);
-        //this.location = new Point(0, 0);
-
-        console.log("Constructor: " + this.location.x + "," + this.location.y);
 
         this.velocity = 0;
         // for drawing splines
@@ -98,23 +92,17 @@ class Sailboat{
         }
     }
 
-    update(elapsed, windSpeed, windDir)
+    update(elapsed)
     {
-        // Log("WINDSPEED" + windSpeed + "   WINDDIR: " + windDir);
-        // Log("Sailboat.update(" + this.boatNumber + ")");
-        // Log("Elapsed: " + elapsed + ", " + (1.0 / elapsed));
-        // Log("windSpeed: " + windSpeed);
-        // Log("windDir: " + windDir);
-
-        if (!windSpeed === null){
-            //throw "No WindSpeed";
+        console.log("Saiboat Update")
+        if (!Weather.windSpeed === null){
             return;
         } 
 
         // call boatspeed network
-        var offwind = Math.abs(thresholdWithin2PI(windDir - this.direction));
-        var maxSpeed = (boatSpeedNetwork.activate([(m[0] * offwind) + b[0], (m[1] * windSpeed) + b[1]]) - b[2]) / m[2];
-
+        var offwind = Math.abs(thresholdWithin2PI(Weather.windDirection - this.direction));
+        var maxSpeed = (this.boatSpeedNetwork.activate([(m[0] * offwind) + b[0], (m[1] * Weather.windSpeed) + b[1]]) - b[2]) / m[2];
+console.log("OFfwind: " + offwind + "  MaxSpeed: " + maxSpeed)
         this.velocity = ((999.0 * this.velocity) + maxSpeed) / 1000.0;
         Log("Speed is: " + maxSpeed + "*");
 
@@ -301,41 +289,42 @@ class Sailboat{
 const fleetSize = 440;
 var camera = new Camera();
 
-class Fleet{
-    constructor(){
-        Log("Creating a Fleet");
-        Fleet.time = null;
-        Fleet.lastTime = Date.now();
-        Fleet.elapsed = 0;
+// class Fleet{
+//     constructor(){
+//         Log("Creating a Fleet");
+//         Fleet.time = null;
+//         Fleet.lastTime = Date.now();
+//         Fleet.elapsed = 0;
 
-        Fleet.fleet = [];
-        for(var i = 0; i < fleetSize; i++)
-        {
-            Fleet.fleet[i] = new Sailboat(i);
-        }
-    }
+//         Fleet.fleet = [];
+//         for(var i = 0; i < fleetSize; i++)
+//         {
+//             Fleet.fleet[i] = new Sailboat(i);
+//         }
+//     }
 
-    static update(){
-        Fleet.time = Date.now();
-        Fleet.elapsed = Fleet.time - Fleet.lastTime;
-        Fleet.lastTime = Fleet.time;
+//     static update(){
+//         Fleet.time = Date.now();
+//         Fleet.elapsed = Fleet.time - Fleet.lastTime;
+//         Fleet.lastTime = Fleet.time;
 
-        Log("Time elapsed: " + Fleet.elapsed);
+//         Log("Time elapsed: " + Fleet.elapsed);
 
-        for(var i = 0; i < fleetSize; i++)
-        {
-            Fleet.fleet[i].update(Fleet.elapsed, Weather.windSpeed, Weather.windDirection);
-        }
-        //Camera.update(Fleet.fleet[0].location);
-    }
+//         for(var i = 0; i < fleetSize; i++)
+//         {
+//             Fleet.fleet[i].update(Fleet.elapsed, Weather.windSpeed, Weather.windDirection);
+//         }
+//         //Camera.update(Fleet.fleet[0].location);
+//     }
 
-    static paint(){
-        Weather.paint();
-        for(var i = 0; i < fleetSize; i++)
-        {
-            //Fleet.fleet[i].paint();
-            YachtClub.Fleet[i].paint();
-            //Fleet.fleet[i].paint();
-        }
-    }
-}
+//     static paint(){
+//         console.log("Fleet Paint()")
+//         Weather.paint();
+//         for(var i = 0; i < fleetSize; i++)
+//         {
+//             //Fleet.fleet[i].paint();
+//             YachtClub.Fleet[i].paint();
+//             //Fleet.fleet[i].paint();
+//         }
+//     }
+// }

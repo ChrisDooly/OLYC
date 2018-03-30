@@ -46,6 +46,7 @@ class Weather{
 
     static paint()
     {
+        console.log("Weather.paint()")
         var c=document.getElementById("canvas");
         var ctx=c.getContext("2d");
         // draw circle

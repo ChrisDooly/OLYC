@@ -343,7 +343,7 @@ console.log('RaceCommittee.CurrentRaceForFleet: ' + RaceCommittee.CurrentRaceFor
                 var sc = classes[page];
                 console.log("Classes[i]: " + sc);
 
-                if (fleetStatistics.Starters[sc] == 0 && fleetsCurrentlyRacing.Contains(sc) && RaceCommittee.Races[sc]._TicksMostRecentFinisher + (2 * 60 * 20) < YachtClub.TicksSinceBigBang) // allow boats 2 minutes to get back to starting area
+                if (fleetStatistics.Starters[sc] == 0 && RaceCommittee.fleetsCurrentlyRacing[sc] != null && RaceCommittee.Races[sc]._TicksMostRecentFinisher + (2 * 60 * 20) < YachtClub.TicksSinceBigBang) // allow boats 2 minutes to get back to starting area
                 {
                     fleetsCurrentlyRacing.Remove(sc);
                     
@@ -359,7 +359,7 @@ console.log('RaceCommittee.CurrentRaceForFleet: ' + RaceCommittee.CurrentRaceFor
 
                     LogRaceFinish(CurrentRaceForFleet[sc.ToString()]);
                 }
-                else if (YachtClub.TicksSinceBigBang > 0 && fleetsCurrentlyRacing.Contains(sc) && RaceCommittee.Races[sc]._TicksFirstFinisher > 0 &&
+                else if (YachtClub.TicksSinceBigBang > 0 && RaceCommittee.fleetsCurrentlyRacing[sc] != null && RaceCommittee.Races[sc]._TicksFirstFinisher > 0 &&
                     YachtClub.TicksSinceBigBang - RaceCommittee.Races[sc]._TicksFirstFinisher > 5 * 20 * 60)
                 {
                     foreach(boat in YachtClub.Fleet)
@@ -554,7 +554,7 @@ console.log('RaceCommittee.CurrentRaceForFleet: ' + RaceCommittee.CurrentRaceFor
                 RaceCommittee.FavoredEnd = RaceCommittee.StartingMark.location;
                 RaceCommittee.ticks_since_adjusting_favored_end = 0;
             }
-            else if (Weather.WindDirection(RaceCommittee.location) > Weather.InitialWindDirection + START_AT_TOLERANCE)
+            else if (Weather.WindDirection(RaceCommittee.location) > Weather.InitialWindDirection +RaceCommittee.START_AT_TOLERANCE)
             {
                 RaceCommittee.FavoredEndDescription = FavoredEndType.RaceCommittee;
                 RaceCommittee.FavoredEnd = RaceCommittee.location;
